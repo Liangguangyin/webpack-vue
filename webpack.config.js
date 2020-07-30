@@ -13,10 +13,17 @@ module.exports = {
     //打包后的文件名
     filename: 'main.js'
   },
+  
   mode: 'development',
   devServer: {
-    historyApiFallback: true,
-    overlay: true
+    proxy: {
+      '/api': {
+        target: 'http://192.168.0.24:8081',
+        pathRewrite: { '^/api': '/' },
+        changeOrigin: true,     // target是域名的话，需要这个参数，
+        // secure: false,          // 设置支持https协议的代理
+      },
+    }
   },
   resolve: {
     //路径别名
@@ -59,26 +66,20 @@ module.exports = {
       }
     },
     {
-      test: /\.js$/, exclude: /node_modules/,
+      test: /\.(js|jsx)$/, exclude: /node_modules/,
       loader: "babel-loader"
     },
     {
       test: /\.vue$/,
       loader: 'vue-loader'
+    },
+    {
+      test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+      loader: 'file-loader'
     }],
   },
   plugins: [
     // 请确保引入这个插件！
     new VueLoaderPlugin()
   ],
-  devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://www.baidu.com/',
-        pathRewrite: {'^/api' : ''},
-        changeOrigin: true,     // target是域名的话，需要这个参数，
-        secure: false,          // 设置支持https协议的代理
-      },
-    }
-  }
 };

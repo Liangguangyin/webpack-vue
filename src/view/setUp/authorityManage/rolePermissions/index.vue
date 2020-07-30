@@ -1,0 +1,222 @@
+<template>
+  <div>
+    <headerFilter />
+    <table-list
+      :fieldList="fieldList"
+      :dataList="dataList"
+      :pagination="pagination"
+      :height="height"
+    >
+      <template slot="bottom-button">
+        <el-button type="primary" size="mini">新增</el-button>
+        <el-button type="primary" size="mini">回收站</el-button>
+      </template>
+    </table-list>
+  </div>
+</template>
+
+<script>
+import headerFilter from "./headerFilter";
+export default {
+  name: "rolePermissions",
+  components: {
+    headerFilter
+  },
+  data() {
+    return {
+      fieldList: [
+        {
+          config: {
+            label: "序号",
+            align: "center",
+            prop: "a"
+          }
+        },
+        {
+          config: {
+            label: "角色名称",
+            align: "center",
+            prop: "b"
+          }
+        },
+        {
+          config: {
+            label: "角色描述",
+            align: "center",
+            prop: "c"
+          }
+        },
+        {
+          config: {
+            label: "权限类型",
+            align: "center",
+            prop: "d"
+          }
+        },
+        {
+          config: {
+            label: "操作",
+            align: "center",
+            ["min-width"]: 500
+          },
+          render: (h, scope) => {
+            return (
+              <div>
+                <a
+                  href="javascript:;"
+                  style="margin-right: 10px"
+                  onClick={() => {
+                    this.onEdit(scope.row);
+                  }}
+                >
+                  审批设置
+                </a>
+                <a
+                  href="javascript:;"
+                  style="margin-right: 10px"
+                  onClick={() => {
+                    this.onEdit(scope.row);
+                  }}
+                >
+                  查看用户
+                </a>
+                <a
+                  href="javascript:;"
+                  style="margin-right: 10px"
+                  onClick={() => {
+                    this.onEdit(scope.row);
+                  }}
+                >
+                  分配功能权限
+                </a>
+                <a
+                  href="javascript:;"
+                  style="margin-right: 10px"
+                  onClick={() => {
+                    this.onEdit(scope.row);
+                  }}
+                >
+                  分配列权限
+                </a>
+                <a
+                  href="javascript:;"
+                  style="margin-right: 10px"
+                  onClick={() => {
+                    this.onEdit(scope.row);
+                  }}
+                >
+                  分配行权限
+                </a>
+                <a
+                  href="javascript:;"
+                  style="margin-right: 10px"
+                  onClick={() => {
+                    this.onEdit(scope.row);
+                  }}
+                >
+                  编辑
+                </a>
+                <a
+                  href="javascript:;"
+                  onClick={() => {
+                    this.delete(scope.row);
+                  }}
+                >
+                  删除
+                </a>
+              </div>
+            );
+          }
+        }
+      ],
+      dataList: [
+        {
+          a: 1,
+          b: "solr",
+          c: "系统管理员",
+          d: "123456",
+          e: "是",
+          f: "柯林布瑞",
+          g: "22,123",
+          h: "100",
+          i: "0",
+          j: "0"
+        },
+        {
+          a: 1,
+          b: "solr",
+          c: "系统管理员",
+          d: "123456",
+          e: "是",
+          f: "柯林布瑞",
+          g: "22,123",
+          h: "100",
+          i: "0",
+          j: "0"
+        },
+        {
+          a: 1,
+          b: "solr",
+          c: "系统管理员",
+          d: "123456",
+          e: "是",
+          f: "柯林布瑞",
+          g: "22,123",
+          h: "100",
+          i: "0",
+          j: "0"
+        },
+        {
+          a: 1,
+          b: "solr",
+          c: "系统管理员",
+          d: "123456",
+          e: "是",
+          f: "柯林布瑞",
+          g: "22,123",
+          h: "100",
+          i: "0",
+          j: "0"
+        },
+        {
+          a: 1,
+          b: "solr",
+          c: "系统管理员",
+          d: "123456",
+          e: "是",
+          f: "柯林布瑞",
+          g: "22,123",
+          h: "100",
+          i: "0",
+          j: "0"
+        },
+        {
+          a: 1,
+          b: "solr",
+          c: "系统管理员",
+          d: "123456",
+          e: "是",
+          f: "柯林布瑞",
+          g: "22,123",
+          h: "100",
+          i: "0",
+          j: "0"
+        }
+      ],
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        pageTotal: 20
+      }
+    };
+  },
+  computed: {
+    height() {
+      return this.$store.state.setUpRightHeight - 68;
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+</style>
