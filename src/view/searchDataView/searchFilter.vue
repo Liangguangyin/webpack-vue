@@ -5,7 +5,7 @@
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>搜索数据视图</el-breadcrumb-item>
       </el-breadcrumb>
-    </div> -->
+    </div>-->
     <div class="searchFliter-head">
       <div class="searchFliter-head-content">
         <textareaInput style="flex:auto;" @search-event="searChEvent" :searchValue="searchValue" />
@@ -18,7 +18,9 @@
           ></el-option>
         </el-select>
       </div>
-      <span class="searchInformmation">从15851898条记录找到1条,耗时391毫秒</span>
+      <span
+        class="searchInformmation"
+      >从{{searchRecord.recordTotal}}条记录找到{{searchRecord.totalRecord}}条,耗时{{searchRecord.totalTime}}毫秒</span>
     </div>
   </div>
 </template>
@@ -28,33 +30,43 @@ import textareaInput from "@/component/textareaInput";
 export default {
   name: "searchFliter",
   components: {
-    textareaInput
+    textareaInput,
+  },
+  props: {
+    searchRecord: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
       options: [
         {
-          value: "1",
-          label: "人次"
+          value: "VKey",
+          label: "人次",
         },
         {
-          value: "2",
-          label: "人"
-        }
+          value: "Empiid",
+          label: "人",
+        },
       ],
-      value: "1",
-      searchValue: ""
+      value: "VKey",
+      searchValue: "",
     };
   },
   created() {
     this.searchValue = this.$route.query.searchField;
   },
-  mounted() {},
-  methods:{
-    searChEvent(val){
-      console.log(val)
-    }
-  }
+  mounted() {
+    this.$nextTick(() => {
+      this.searChEvent(this.searchValue);
+    });
+  },
+  methods: {
+    searChEvent(val) {
+      this.$emit("callBack", { value: val, type: this.value });
+    },
+  },
 };
 </script>
 

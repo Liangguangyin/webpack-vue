@@ -1,14 +1,16 @@
-
 import axios from 'axios'
+import { Notification } from 'element-ui';
+import { loadingClose } from '@/util/Loading'
 
 class httpRequest {
   constructor(baseUrl) {
-    this.baseUrl = baseUrl
+    this.baseUrl = baseUrl,
+      this.Loading = null
   }
   getInsideConfig() {
     const config = {
       baseURL: this.baseUrl,
-      timeout: 8000, // 超时时间 可自定义其他配置
+      timeout: 1800000, // 超时时间 可自定义其他配置
       headers: { "content-type": "application/json" }
     }
     return config
@@ -28,27 +30,16 @@ class httpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       return res
-      //   const { data, status } = res
-      //   return { data, status }
-      // }, error => {
-      //   let info = {}
-      //   let { status, statusText, data } = error.response
-      //   if (!error.response) {
-      //     info = {
-      //       code: 5000,
-      //       msg: 'Network Error'
-      //     }
-      //   } else {
-      //     // 此处整理错误信息格式
-      //     info = {
-      //       code: status,
-      //       data: data,
-      //       msg: statusText
-      //     }
-      //   }
-      //   return Promise.reject(info)
+    }, error => {
+      loadingClose()
+      Notification.error({
+        title: '请求错误',
+        message: error
+      });
     })
   }
+
+
   request(options) {
     const instance = axios.create()
     options = Object.assign(this.getInsideConfig(), options)

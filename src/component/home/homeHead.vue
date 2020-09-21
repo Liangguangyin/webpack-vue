@@ -26,7 +26,7 @@
       </div>
       <div class="head-out-icon">
         <el-tooltip class="item" effect="dark" content="退出登录" placement="bottom-end">
-          <i class="el-icon-share" @click="sginOut"></i>
+          <i class="el-icon-switch-button" @click="sginOut"></i>
         </el-tooltip>
       </div>
     </div>

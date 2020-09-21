@@ -1,9 +1,17 @@
 <template>
   <div class="hotWords">
     <div class="hotWords-filter">
-      <el-select v-model="value" size="mini" placeholder="请选择">
+      <el-select
+        v-model="numValue"
+        filterable
+        allow-create
+        default-first-option
+        size="mini"
+        placeholder="请选择"
+        @change="selectChange"
+      >
         <el-option
-          v-for="item in options"
+          v-for="item in numOptions"
           :key="item.value"
           :label="item.label"
           :value="item.value"
@@ -18,9 +26,10 @@
         range-separator="-"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
+        @change="selectChangeDate"
         :picker-options="pickerOptions"
       ></el-date-picker>
-      <el-select v-model="value" size="mini" placeholder="请选择">
+      <el-select v-model="value" size="mini" @change="selectChange" clearable placeholder="默认全部">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -42,678 +51,27 @@ export default {
   name: "hotWords",
   data() {
     return {
-      dataList: [
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "男",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "男",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "只能",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "只能",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "登上",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "登上",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "巅峰",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "巅峰",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "weao",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "weao",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "zhinanai",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "zhinanai",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "fuk",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "fuk",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        },
-        {
-          label: "nank",
-          size: this.randomNum(10000, 1),
-          id: this.randomNum(500, 10, 4),
-          // id: "nank",
-          color: this.getRandomColorString(),
-          x: this.randomNum(2500, 10, 4),
-          y: this.randomNum(1000, 10, 4)
-        }
-      ],
+      dataList: [],
       value: "",
-      options: [
+      numValue: 100,
+      options: [],
+      numOptions: [
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: 50,
+          label: "top50",
         },
         {
-          value: "选项2",
-          label: "双皮奶"
+          value: 100,
+          label: "top100",
         },
         {
-          value: "选项3",
-          label: "蚵仔煎"
+          value: 300,
+          label: "top300",
         },
         {
-          value: "选项4",
-          label: "龙须面"
+          value: 500,
+          label: "top500",
         },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
       ],
       pickerOptions: {
         shortcuts: [
@@ -724,7 +82,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "半年内统计",
@@ -733,7 +91,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "一年内统计",
@@ -742,7 +100,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 360);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "两年内统计",
@@ -751,7 +109,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 720);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "三年内统计",
@@ -760,7 +118,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 1080);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "四年内统计",
@@ -769,7 +127,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 1440);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "五年内统计",
@@ -778,17 +136,59 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 1800);
               picker.$emit("pick", [start, end]);
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       value2: "",
     };
   },
-  mounted() {
-    this.infoEcharts();
+  created() {
+    this.getWordCloudDetailMessage();
   },
+  mounted() {},
   methods: {
+    selectChange(val) {
+      this.getWordCloudDetailMessage();
+    },
+    selectChangeDate(val) {
+      let start = "",
+        end = "";
+      if (val) {
+        val.map((item, index) => {
+          if (index == 0) {
+            start = new Date(item).pattern("yyyy-MM-dd");
+          } else {
+            end = new Date(item).pattern("yyyy-MM-dd");
+          }
+        });
+      }
+      this.getWordCloudDetailMessage(start, end);
+    },
+    getWordCloudDetailMessage(start = "", end = "") {
+      this.$loadingOpen();
+      this.options = [];
+      let formData = new FormData();
+      formData.append("tops", this.numValue);
+      formData.append("department", this.value);
+      formData.append("createTime", start);
+      formData.append("lastTime", end);
+      this.$axios
+        .post("/hssp/head/getWordCloudDetailMessage", formData)
+        .then((res) => {
+          this.$loadingClose();
+          let obj = {};
+          res.data.departmentList.map((item) => {
+            obj = {
+              value: item,
+              label: item,
+            };
+            this.options.push(obj);
+          });
+          this.dataList = res.data.wordCloudListJson;
+          this.infoEcharts();
+        });
+    },
     // 随机颜色
     getRandomColorString() {
       return (
@@ -828,15 +228,18 @@ export default {
         {
           title: {
             text: "热词统计图",
-            left: "right"
+            left: "right",
           },
           tooltip: {
-            formatter: function(info) {
+            formatter: function (info) {
               return [
-                '<div class="tooltip-title">' + info.data.name + "</div>",
-                "计数: " + info.data.symbolSize * 100
+                '<div class="tooltip-title">' +
+                  "字段: " +
+                  info.data.name +
+                  "</div>",
+                "计数: " + info.data.num,
               ].join("");
-            }
+            },
           },
           animationDurationUpdate: 1500,
           animationEasingUpdate: "quinticInOut",
@@ -845,16 +248,22 @@ export default {
               type: "graph",
               layout: "none",
               progressiveThreshold: 700,
-              data: this.dataList.map(function(node) {
+              data: this.dataList.map((node) => {
+                let num = 0;
+                if (node.weight > 80) {
+                  num = 80;
+                } else {
+                  num = node.weight;
+                }
                 return {
-                  x: node.x,
-                  y: node.y,
-                  id: node.id,
-                  name: node.label,
-                  symbolSize: node.size / 100,
+                  x: this.randomNum(2500, 10, 4),
+                  y: this.randomNum(1000, 10, 4),
+                  name: node.name,
+                  symbolSize: num,
                   itemStyle: {
-                    color: node.color
-                  }
+                    color: this.getRandomColorString(),
+                  },
+                  num: node.weight,
                 };
               }),
               // edges: json.edges.map(function (edge) {
@@ -871,28 +280,28 @@ export default {
               // },
               label: {
                 show: true,
-                formatter: "{b}"
+                formatter: "{b}",
               },
               roam: true,
-              focusNodeAdjacency: true
+              // focusNodeAdjacency: true
               // lineStyle: {
               //   width: 0.5,
               //   curveness: 0.3,
               //   opacity: 0.7
               // }
-            }
-          ]
+            },
+          ],
         },
         true
       );
-      hotWordsEcharts.on("click", params => {
+      hotWordsEcharts.on("click", (params) => {
         this.$router.push({
           name: "searchDataView",
-          query: { searchField: params.name }
+          query: { searchField: params.name },
         });
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss">

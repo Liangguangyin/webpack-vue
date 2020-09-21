@@ -13,17 +13,25 @@ module.exports = {
     //打包后的文件名
     filename: 'main.js'
   },
-  
+
   mode: 'development',
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://192.168.0.24:8081',
+        target: 'http://localhost:8081',
         pathRewrite: { '^/api': '/' },
         changeOrigin: true,     // target是域名的话，需要这个参数，
         // secure: false,          // 设置支持https协议的代理
       },
+      '/sso': {
+        target: 'http://192.168.0.35:9041',
+        pathRewrite: { '^/sso': '/' },
+        changeOrigin: true,     // target是域名的话，需要这个参数，
+        // secure: false,          // 设置支持https协议的代理
+      },
     }
+
+    //http://192.168.0.35:9041/sso
   },
   resolve: {
     //路径别名

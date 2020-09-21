@@ -1,5 +1,5 @@
 <template>
-  <div class="App" :style="{'height': height+'px'}">
+  <div class="App">
     <router-view />
   </div>
 </template>
@@ -7,18 +7,16 @@
 export default {
   name: "App",
   data() {
-    return {
-      height: ""
-    };
+    return {};
   },
-  created() {
-    this.height = window.innerHeight;
-  }
+  created() {},
+  mounted() {},
 };
 </script>
 <style lang="scss" scoped>
-.App{
+.App {
   background: #fafafa;
-  min-width: 1060px;
+  min-width: 1100px;
+  height: 100%;
 }
 </style>

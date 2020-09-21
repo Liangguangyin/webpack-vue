@@ -1,21 +1,37 @@
 <template>
-  <div style="height:100%; position:relative;">
+  <div style="position:relative;">
     <div class="bottom-button">
       <slot name="bottom-button"></slot>
     </div>
     <el-table
       :data="dataList"
       border
-      :height="height ? height : null"
+      :max-height="height ? height : null"
       v-loading="showLoading"
       size="mini"
       style="width: 100%;"
+      :row-key="setKeys"
       :fit="true"
       @header-click="headerClick"
+      @selection-change="selectionChange"
+      :span-method="spanMethod"
+      ref="multipleTable"
     >
-      <template v-for="(item,index ) in fieldList">
-        <el-table-column v-if="!item.render" :key="index" v-bind.sync="item['config']"></el-table-column>
-        <el-table-column v-else :key="index" v-bind.sync="item['config']">
+      <template>
+        <slot name="checkBox"></slot>
+      </template>
+      <template v-for="(item,index ) in field">
+        <!-- 这个hide有点抽象，因为需要配前端显示和隐藏，真的才不显示 -->
+        <el-table-column
+          v-if="!item.render && (!item.config['hide'] || item.config['hide'] == false)"
+          :key="index"
+          v-bind.sync="item['config']"
+        ></el-table-column>
+        <el-table-column
+          v-if="item.render && (!item.config['hide'] || item.config['hide'] == false)"
+          :key="index"
+          v-bind.sync="item['config']"
+        >
           <template slot-scope="scope">
             <expand-item :column="item" :row="scope.row" :render="item.render"></expand-item>
           </template>
@@ -29,7 +45,7 @@
         size="mini"
         @current-change="handleCurrentChange"
         :current-page="pagination['currentPage']"
-        :page-sizes="[10, 20, 30, 40, 50]"
+        :page-sizes="pageSizes"
         :page-size="pagination['pageSize']"
         layout="total, sizes, prev, pager, next, jumper"
         :total="pagination['pageTotal']"
@@ -49,47 +65,86 @@ export default {
         render: Function,
         column: {
           type: Object,
-          default: () => null
-        }
+          default: () => null,
+        },
       },
       render: (h, ctx) => {
         const params = {
-          row: ctx.props.row
+          row: ctx.props.row,
         };
         if (ctx.props.column) params.column = ctx.props.column;
         return ctx.props.render(h, params);
-      }
-    }
+      },
+    },
   },
   props: {
     fieldList: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
 
     dataList: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
 
     showLoading: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
 
     height: {
       type: String | Number,
-      default: () => ""
+      default: () => "",
     },
 
     pagination: {
       type: Object,
-      default: () => null
-    }
+      default: () => null,
+    },
+
+    pageSizes: {
+      type: Array,
+      default: () => [10, 20, 30, 40, 50],
+    },
+
+    // 设置合并行的方法
+    spanMethod: {
+      type: Function,
+      default: () => {
+        () => {};
+      },
+    },
+
+    // 设置key值方法，用法和官网都是一样的，只是把方法暴露给引用组件
+    setKeys: {
+      type: Function,
+      default: () => {
+        () => {};
+      },
+    },
   },
   data() {
-    return {};
+    return {
+      field: [],
+      isRouterAlive: true,
+    };
   },
+
+  watch: {
+    fieldList(val) {
+      if (val.length !== 0) {
+        this.field = val;
+      }
+    },
+  },
+
+  mounted() {
+    if (this.fieldList.length !== 0) {
+      this.field = this.fieldList;
+    }
+  },
+
   methods: {
     handleClick(row) {
       console.log(row);
@@ -106,8 +161,18 @@ export default {
       } catch (err) {
         console.log(err);
       }
-    }
-  }
+    },
+    selectionChange(selection) {
+      try {
+        this.$emit("selection-change", selection);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    getTableRefs() {
+      return this.$refs.multipleTable;
+    },
+  },
 };
 </script>
 

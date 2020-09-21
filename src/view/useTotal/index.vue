@@ -4,8 +4,8 @@
       <div>
         <span class="useTotal-header-imformmation">
           总使用数:
-          <span>818</span>次 使用科室:
-          <span>21</span>个
+          <span>{{totalNum}}</span>次 使用科室:
+          <span>{{useSection}}</span>个
         </span>
         <el-date-picker
           v-model="value2"
@@ -17,6 +17,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :picker-options="pickerOptions"
+          @change="datePickerChange"
         ></el-date-picker>
         <span class="useTotal-header-search">
           <el-input size="mini" v-model="input" placeholder="搜索"></el-input>
@@ -45,7 +46,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "半年数据",
@@ -54,7 +55,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "一年数据",
@@ -63,7 +64,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 360);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "两年数据",
@@ -72,7 +73,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 720);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "三年数据",
@@ -81,7 +82,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 1080);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "四年数据",
@@ -90,7 +91,7 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 1440);
               picker.$emit("pick", [start, end]);
-            }
+            },
           },
           {
             text: "五年数据",
@@ -99,44 +100,89 @@ export default {
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 1800);
               picker.$emit("pick", [start, end]);
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       fieldList: [
         {
           config: {
             label: "序号",
-            prop: "a"
-          }
+            type: "index",
+          },
         },
         {
           config: {
             label: "科室",
-            prop: "b"
-          }
+            prop: "b",
+          },
         },
         {
           config: {
             label: "总记录数",
-            prop: "c"
-          }
-        }
-      ],
-      dataList: [
-        {
-          a: 1,
-          b: "柯林布瑞",
-          c: "805"
+            prop: "c",
+          },
         },
-        {
-          a: 2,
-          b: "柯林布瑞测试部",
-          c: "13"
-        }
-      ]
+      ],
+      dataList: [],
+      dataListCopy: [],
+      totalNum: 0,
+      useSection: 0,
     };
-  }
+  },
+  created() {
+    this.getDiseaseCountDetailMessage();
+  },
+  watch: {
+    input(val) {
+      if (val) {
+        this.dataList = this.dataListCopy.filter(
+          (item) => JSON.stringify(item).indexOf(val) !== -1
+        );
+      } else {
+        this.dataList = this.dataListCopy;
+      }
+    },
+  },
+  methods: {
+    getDiseaseCountDetailMessage(start = "1", end = "") {
+      this.$loadingOpen();
+      this.dataList = [];
+      let formData = new FormData();
+      formData.append("createTime", start);
+      formData.append("lastTime", end);
+      this.$axios
+        .post("/hssp/head/getDiseaseCountDetailMessage", formData)
+        .then((res) => {
+          this.$loadingClose();
+          this.totalNum = res.data.totalCount;
+          this.useSection = res.data.departmentList.length;
+          let obj = {};
+          for (let i = 0; i < res.data.departmentList.length; i++) {
+            obj = {
+              b: res.data.departmentList[i],
+              c: res.data.countsList[i],
+            };
+            this.dataList.push(obj);
+            this.dataListCopy = this.dataList;
+          }
+        });
+    },
+    datePickerChange(val) {
+      let start = "",
+        end = "";
+      if (val) {
+        val.map((item, index) => {
+          if (index == 0) {
+            start = new Date(item).pattern("yyyy-MM-dd");
+          } else {
+            end = new Date(item).pattern("yyyy-MM-dd");
+          }
+        });
+      }
+      this.getDiseaseCountDetailMessage(start, end);
+    },
+  },
 };
 </script>
 

@@ -37,8 +37,12 @@ export default {
   name: "home",
   components: {
     homeHead,
-    homeFooter
+    homeFooter,
   },
+  data() {
+    return {};
+  },
+  mounted() {},
   methods: {
     // changes() {
     //   this.$store.commit("changeName", "OFF");
@@ -46,7 +50,7 @@ export default {
     // gettre() {
     //   this.$store.commit("changeName", "No");
     // }
-  }
+  },
 };
 </script>
 

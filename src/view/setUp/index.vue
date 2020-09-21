@@ -32,11 +32,11 @@ import RouterList from "./config";
 export default {
   name: "setUp",
   components: {
-    textareaInput
+    textareaInput,
   },
   data() {
     return {
-      boxHeight: 0
+      boxHeight: 0,
     };
   },
   computed: {
@@ -51,13 +51,13 @@ export default {
         url = "/systemConfig/tableConfig";
       }
       return url;
-    }
+    },
   },
   mounted() {
     // 进入该路由默认进入tableConfig
     if (this.path == "/systemConfig/tableConfig") {
       this.$router.push({
-        name: "tableConfig"
+        name: "tableConfig",
       });
     }
     console.log();
@@ -70,10 +70,10 @@ export default {
     onClickInRouter(item) {
       this.$router.push({
         name: item.name,
-        query: this.boxHeight
+        query: this.boxHeight,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

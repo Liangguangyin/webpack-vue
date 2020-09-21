@@ -46,6 +46,7 @@
 
 <script>
 import hxlogin from "../../../public/img/hxlogo.png";
+import axios from "axios";
 const Base64 = require("js-base64").Base64;
 export default {
   name: "login",
@@ -55,11 +56,13 @@ export default {
       username: "",
       password: "",
       checked: false,
-      restaurants: []
+      restaurants: [],
     };
   },
   mounted() {
     this.restaurants = this.loadAll();
+    // window.location =
+    //   "http://192.168.0.35:9041/sso/?ClientUrl=http://localhost:8080/searchDataView&AppName=%E4%B8%B4%E5%BA%8A%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%A3%80%E7%B4%A2";
   },
   watch: {
     username(val) {
@@ -67,7 +70,7 @@ export default {
         this.password = "";
         this.checked = false;
       }
-    }
+    },
   },
   methods: {
     changePassword() {
@@ -75,39 +78,58 @@ export default {
     },
     login() {
       if ((this.username, this.password)) {
-        this.$store.commit("setToken", JSON.stringify(this.username));
-        let arr = JSON.parse(localStorage.getItem("userpass"))
-          ? JSON.parse(localStorage.getItem("userpass"))
-          : [];
-        if (this.checked) {
-          let boo = true;
-          // 判断当前账号是否存在，如果存在就修改密码
+        axios
+          .post("/sso/sso/Home/SubmitVerify", {
+            AppName: "临床大数据检索",
+            Account: "kpi",
+            Password: "123890",
+            ClientUrl: "http://192.168.0.35:9041/index",
+          })
+          .then((res) => {
+            console.log(res);
+            if (res.status == 200) {
+              this.$store.commit(
+                "setToken",
+                JSON.stringify(res.data.match(/index(\S*)/)[1])
+              );
+              let arr = JSON.parse(localStorage.getItem("userpass"))
+                ? JSON.parse(localStorage.getItem("userpass"))
+                : [];
+              if (this.checked) {
+                let boo = true;
+                // 判断当前账号是否存在，如果存在就修改密码
 
-          for (let i = 0; i < arr.length; i++) {
-            if (Base64.decode(arr[i].user) == this.username) {
-              arr[i].pass = Base64.encode(this.password);
-              boo = false;
-              break;
+                for (let i = 0; i < arr.length; i++) {
+                  if (Base64.decode(arr[i].user) == this.username) {
+                    arr[i].pass = Base64.encode(this.password);
+                    boo = false;
+                    break;
+                  }
+                }
+                // 如果不存在就添加账号
+                if (boo) {
+                  arr.push({
+                    user: Base64.encode(this.username),
+                    pass: Base64.encode(this.password),
+                  });
+                }
+                localStorage.setItem("userpass", JSON.stringify(arr));
+              } else {
+                // 如果没有勾选记住密码就删除该账号
+                arr = arr.filter(
+                  (item) => item.user !== Base64.encode(this.username)
+                );
+                localStorage.setItem("userpass", JSON.stringify(arr));
+              }
+              this.$router.push("/");
+            } else {
+              alert("错误");
             }
-          }
-          // 如果不存在就添加账号
-          if (boo) {
-            arr.push({
-              user: Base64.encode(this.username),
-              pass: Base64.encode(this.password)
-            });
-          }
-          localStorage.setItem("userpass", JSON.stringify(arr));
-        } else {
-          // 如果没有勾选记住密码就删除该账号
-          arr = arr.filter(item => item.user !== Base64.encode(this.username));
-          localStorage.setItem("userpass", JSON.stringify(arr));
-        }
-        this.$router.push("/");
+          });
       } else {
         this.$message({
           message: "请输入用户名或密码",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -120,7 +142,7 @@ export default {
       cb(results);
     },
     createFilter(queryString) {
-      return restaurant => {
+      return (restaurant) => {
         return (
           restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
           0
@@ -136,7 +158,7 @@ export default {
           data[index] = {
             value: Base64.decode(item.user),
             pass: Base64.decode(item.pass),
-            user: Base64.decode(item.user)
+            user: Base64.decode(item.user),
           };
         });
       }
@@ -146,8 +168,8 @@ export default {
       this.username = item.user;
       this.password = item.pass;
       this.checked = true;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -24,7 +24,7 @@ export default {
   name: "Page404",
   computed: {
     message() {
-      return "网站管理员为允许您进入此页面";
+      return "网站管理员未允许您进入此页面";
     }
   },
   data() {

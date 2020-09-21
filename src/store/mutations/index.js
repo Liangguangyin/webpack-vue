@@ -19,6 +19,10 @@ const mutations = {
   // 设置表格动态高度
   setSetUpRightHeight(state, height) {
     state.setUpRightHeight = height
+  },
+  // 设置z-index 占比
+  setzIndex(state) {
+    state.zIndex = state.zIndex + 1
   }
 }
 

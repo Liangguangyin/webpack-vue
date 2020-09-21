@@ -26,15 +26,17 @@
             <el-upload
               class="upload-demo"
               action="https://jsonplaceholder.typicode.com/posts/"
+              :auto-upload="false"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :before-remove="beforeRemove"
               multiple
-              :limit="3"
+              :limit="1"
               :on-exceed="handleExceed"
+              :on-change="fileChange"
               :file-list="fileList"
             >
-              <el-button size="small" type="primary">点击上传</el-button>
+              <el-button size="small" plain>选择文件</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </el-form-item>
@@ -49,7 +51,7 @@
             <!-- <bigDataSelect /> -->
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" style="float: right;" @click="onSubmit">提交</el-button>
+            <el-button type="primary"  @click="onSubmit">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -61,7 +63,7 @@ import bigDataSelect from "@/component/bigDataSelect/bigDataSelect";
 export default {
   name: "feedback",
   components: {
-    bigDataSelect
+    bigDataSelect,
   },
   data() {
     return {
@@ -69,53 +71,43 @@ export default {
       formLabelAlign: {
         phone: "",
         type: "同义词",
-        content: ""
+        file: "",
+        content: "",
       },
       options: [
         {
           label: "同义词",
-          value: "同义词"
+          value: "同义词",
         },
         {
           label: "搜索数据疑问",
-          value: "搜索数据疑问"
+          value: "搜索数据疑问",
         },
         {
           label: "功能使用疑问",
-          value: "功能使用疑问"
+          value: "功能使用疑问",
         },
         {
           label: "功能拓展建议",
-          value: "功能拓展建议"
+          value: "功能拓展建议",
         },
         {
           label: "其他",
-          value: "其他"
-        }
+          value: "其他",
+        },
       ],
       rules: {
         content: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
           {
-            min: 10,
+            min: 1,
             max: 100,
-            message: "长度在 10 到 100 个字符",
-            trigger: "blur"
-          }
-        ]
+            message: "长度在 1 到 100 个字符",
+            trigger: "blur",
+          },
+        ],
       },
-      fileList: [
-        {
-          name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        },
-        {
-          name: "food2.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        }
-      ]
+      fileList: [],
     };
   },
   methods: {
@@ -125,27 +117,52 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
+    // 文件状态改变时的钩子
+    fileChange(file, fileList) {
+      this.formLabelAlign.file = file.raw;
+    },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
       );
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     onSubmit() {
-      this.$refs["ruleForm"].validate(valid => {
+      this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          this.$loadingOpen();
+          let formData = new FormData();
+          formData.append("annex", this.formLabelAlign.file);
+          formData.append("types", this.formLabelAlign.type);
+          formData.append("feedbackContent", this.formLabelAlign.content);
+          formData.append("contactPhone", this.formLabelAlign.phone);
+          this.$axios.post("/hssp/head/addFeedback", formData).then((res) => {
+            this.$loadingClose();
+            if (res.data.status == "succeed") {
+              this.$notify({
+                title: "反馈提示",
+                message: "你的反馈也成功提交，我们会尽快完善",
+                type: "success",
+              });
+              this.formLabelAlign = {
+                phone: "",
+                type: "同义词",
+                file: "",
+                content: "",
+              };
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -167,6 +184,7 @@ export default {
       right: 0;
       left: 0;
       margin: auto;
+      padding: 10px;
     }
   }
 }
