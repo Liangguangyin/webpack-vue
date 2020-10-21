@@ -81,8 +81,8 @@ export default {
         axios
           .post("/sso/sso/Home/SubmitVerify", {
             AppName: "临床大数据检索",
-            Account: "kpi",
-            Password: "123890",
+            Account: this.username,
+            Password: this.password,
             ClientUrl: "http://192.168.0.35:9041/index",
           })
           .then((res) => {
